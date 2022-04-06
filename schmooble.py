@@ -1,7 +1,7 @@
 import random
 import turtle
 
-foodDistanceLimit = 500
+foodDistanceLimit = 100
 foodLimit = 20
 
 class FoodList:
@@ -26,9 +26,19 @@ class FoodList:
 	def removePoint(self,point):
 		# print(self.list)
 		# print(point)
+		self.turtle.penup()
+		self.turtle.goto(point)
+		self.turtle.dot('light green')
+		self.turtle.goto(-2000,-2000)
 		self.list.remove(point)
 		self.addPoint()
-		self.drawPoints()
+		self.drawPoint(self.list[-1])
+
+	def drawPoint(self,point):
+		self.turtle.penup()
+		self.turtle.goto(point)
+		self.turtle.dot()
+		self.turtle.goto(-2000,-2000)
 
 	def drawPoints(self):
 		self.turtle.clear()
