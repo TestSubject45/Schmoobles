@@ -56,19 +56,48 @@ class FoodList:
 
 foodList = FoodList(foodDistanceLimit,foodLimit)
 
+class MatingRegister:
+	def __init__(self):
+		self.dict = {}
+
+	def addTurtle(self, turtleID, position):
+		if turtleID not in self.dict.keys():
+			self.dict[str(turtleID)] = position
+			print("Added turtle:",turtleID)
+
+	def removeTurtle(self,turtleID):
+		self.dict.pop(str(turtleID))
+
+	def getMatePositions(self):
+		outputList = []
+		for key in self.dict.keys():
+			outputList.append(self.dict[key])
+		return outputList
+
+matingRegister = MatingRegister()
+
+def findMidpoint(p1,p2):
+	p1x = p1[0]
+	p1y = p1[1]
+
+	p2x = p2[0]
+	p2y = p2[1]
+
+	midpointX = (p1x + p2x) / 2
+	midpointY = (p1y + p2y) / 2
+
+	return (midpointX,midpointY)
 
 class Schmooble:
-	def __init__(self,idnum,parent1=None,parent2=None):
-		if parent1 == None or parent2 == None:
-			self.speed = random.randint(1,10)
-			self.energy = random.randint(5,200)
-			self.matingEnergyThreshold = random.randint(50,200)
-			self.energyTransferToChild = round(random.uniform(0,1),2)
-			self.sightRange = random.randint(10,200)
-			self.boredomLimit = random.randint(1,21)
-			self.mutationRate = round(random.uniform(0,1),2)
-		else:
-			self.mate(parent1,parent2)
+	def __init__(self,idnum):
+		self.speed = random.randint(1,10)
+		self.energy = random.randint(5,200)
+		self.matingEnergyThreshold = random.randint(50,200)
+		self.energyTransferToChild = round(random.uniform(0,1),2)
+		self.sightRange = random.randint(10,200)
+		self.boredomLimit = random.randint(1,21)
+		self.mutationRate = round(random.uniform(0,1),2)
+
 
 		self.turtle = turtle.Turtle()
 		self.turtle.speed = self.speed
@@ -159,6 +188,19 @@ class Schmooble:
 #				print("No food here now!")
 				self.state = 0
 
+	def moveToMate(self,point):
+		self.spendEnergy(1)
+		self.turtle.setheading(self.turtle.towards(point))
+		self.turtle.forward(self.speed)
+		if self.turtle.distance(point) < 5:
+			if self.mateAtPoint(point):
+				self.mate()
+				foodList.removePoint(point)
+				self.state = 0
+			else:
+#				print("No food here now!")
+				self.state = 0
+
 	def eat(self,energy):
 		self.energy = self.energy + energy
 #		print("Current Energy:",self.energy)
@@ -166,9 +208,20 @@ class Schmooble:
 			self.state = 3
 
 	def searchForMate(self):
-		print("#######################Energy threshold crossed, searching for mate!")
-		self.creatureInfo()
-		pass
+		global matingRegister
+		matingOptions = matingRegister.getMatePositions()
+		if len(matingOptions) < 1:
+			matingRegister.addTurtle(self.id,self.turtle.pos())
+		elif len(matingOptions) == 1:
+			pass
+		elif len(matingOptions) >= 2:
+			for point in matingOptions:
+				if self.turtle.distance(point) < self.sightRange and self.turtle.distance(point) != 0:
+					print("Mate found!!")
+					destination = findMidpoint(self.turtle.pos(),point)
+					self.state = 1
+					self.move(destination)
+
 
 	def wander(self):
 	#	print("Wandering!")
@@ -188,17 +241,21 @@ class Schmooble:
 			self.timeSpentWandering = 0
 
 
-	def mate(self,parent1,parent2):
-		mutationRate = abs(((parent1.mutationRate + parent2.mutationRate) / 2) + random.uniform(-1,1))
+	def mate(self,mate):
+		outputSchmooble = Schmooble()
 
-		self.speed = (parent1.speed + (parent2.speed)/2) * mutationRate
-		self.setSpeed(self.speed)
-		self.energy = (parent1.energy * parent1.energyTransferToChild) + (parent2.energy * parent2.energyTransferToChild) * mutationRate
-		self.matingEnergyThreshold = round(((parent1.matingEnergyThreshold + parent2.matingEnergyThreshold) / 2) * mutationRate,2)
-		self.energyTransferToChild = round(((parent1.energyTransferToChild + parent2.energyTransferToChild) / 2) * mutationRate,2)
-		self.sightRange = ((parent1.sightRange + parent2.sightRange)/2)*mutationRate
-		self.boredomLimit = ((parent1.boredomLimit + parent2.boredomLimit)/2)*mutationRate
-		self.mutationRate = round(mutationRate,2)
+		mutationRate = abs(((self.mutationRate + mate.mutationRate) / 2) + random.uniform(-1,1))
+
+		outputSchmooble.speed = (self.speed + (mate.speed)/2) * mutationRate
+		outputSchmooble.setSpeed(self.speed)
+		outputSchmooble.energy = (self.energy * self.energyTransferToChild) + (mate.energy * mate.energyTransferToChild) * mutationRate
+		outputSchmooble.matingEnergyThreshold = round(((self.matingEnergyThreshold + mate.matingEnergyThreshold) / 2) * mutationRate,2)
+		outputSchmooble.energyTransferToChild = round(((self.energyTransferToChild + mate.energyTransferToChild) / 2) * mutationRate,2)
+		outputSchmooble.sightRange = ((self.sightRange + mate.sightRange)/2)*mutationRate
+		outputSchmooble.boredomLimit = ((self.boredomLimit + mate.boredomLimit)/2)*mutationRate
+		outputSchmooble.mutationRate = round(mutationRate,2)
+
+		return outputSchmooble
 
 	def creatureInfo(self):
 		print("ID Number:",self.id)

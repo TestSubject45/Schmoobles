@@ -1,8 +1,8 @@
 import random
 import turtle
-from schmooble import Schmooble, foodList, mapRange
+from schmooble import Schmooble, foodList, mapRange, matingRegister
 
-startPop = 1
+startPop = 2
 
 myscreen = turtle.Screen()
 
