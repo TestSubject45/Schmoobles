@@ -1,7 +1,7 @@
 import random
 import turtle
 
-foodDistanceLimit = 100
+foodDistanceLimit = 400
 foodLimit = 20
 
 class FoodList:
@@ -14,6 +14,7 @@ class FoodList:
 		self.turtle = turtle.Turtle()
 		self.turtle.speed(0)
 		self.turtle.pencolor('red')
+		self.sinceReset = 0
 		self.drawPoints()
 
 	def makeFoodList(self):
@@ -24,20 +25,25 @@ class FoodList:
 		self.list.append((random.randint(-self.distanceLimit,self.distanceLimit),random.randint(-self.distanceLimit,self.distanceLimit)))
 
 	def removePoint(self,point):
+		self.sinceReset = self.sinceReset + 1
 		# print(self.list)
 		# print(point)
 		self.turtle.penup()
 		self.turtle.goto(point)
-		self.turtle.dot('light green')
+		self.turtle.dot(10,'light green')
 		self.turtle.goto(-2000,-2000)
 		self.list.remove(point)
 		self.addPoint()
-		self.drawPoint(self.list[-1])
+		if self.sinceReset > self.pointLimit:
+			self.drawPoints()
+			self.sinceReset = 0
+		else:
+			self.drawPoint(self.list[-1])
 
 	def drawPoint(self,point):
 		self.turtle.penup()
 		self.turtle.goto(point)
-		self.turtle.dot()
+		self.turtle.dot(10,'dark green')
 		self.turtle.goto(-2000,-2000)
 
 	def drawPoints(self):
@@ -45,7 +51,7 @@ class FoodList:
 		for i in range(0,len(self.list)):
 			self.turtle.penup()
 			self.turtle.goto(self.list[i])
-			self.turtle.dot()
+			self.turtle.dot(10,'dark green')
 			self.turtle.goto(-2000,-2000)
 
 foodList = FoodList(foodDistanceLimit,foodLimit)
@@ -70,6 +76,11 @@ class Schmooble:
 		self.destination = self.turtle.pos()
 		self.timeSpentWandering = 0
 		self.id = idnum
+		self.turtle.onclick(self.creatureInfoClickHelper)
+
+	def creatureInfoClickHelper(self,x,y):
+		print("Location:",x,y)
+		self.creatureInfo()
 
 	def spendEnergy(self,energy):
 		self.energy = self.energy - energy
@@ -78,8 +89,9 @@ class Schmooble:
 #		print("Energy Remaining:",self.energy)
 
 	def starve(self):
-#		print("No energy!")
-#		print("This Schmooble has died.")
+		print("No energy!")
+		print("This Schmooble has died.")
+		self.creatureInfo()
 		self.state = 4
 
 	def setSpeed(self,speed):
