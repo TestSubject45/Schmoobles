@@ -103,6 +103,8 @@ class Schmooble:
 			self.turtle.speed = speed
 
 	def update(self):
+		if self.energy >= self.matingEnergyThreshold:
+			self.state = 3
 #		print("State:",self.state)
 		global foodList
 		if self.state == 0: #Search for Food
@@ -207,6 +209,7 @@ class Schmooble:
 		print("Sight Range:",self.sightRange)
 		print("Boredom Limit:",self.boredomLimit)
 		print("Mutation Rate:",self.mutationRate)
+		print("Current State:",self.state)
 		print("\n\n")
 
 
