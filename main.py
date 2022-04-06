@@ -2,7 +2,7 @@ import random
 import turtle
 from schmooble import Schmooble, foodList, mapRange
 
-startPop = 10
+startPop = 1
 
 myscreen = turtle.Screen()
 
@@ -30,6 +30,6 @@ while running:
 		running = False
 #	print("Total dead population:",deadPop)		
 
-input("All population has died...")
+tmp = input("All population has died...")
 
 turtle.done()
