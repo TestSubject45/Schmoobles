@@ -7,8 +7,8 @@ startPop = 10
 myscreen = turtle.Screen()
 
 myscreen.bgcolor('light green')
-myscreen.setup(0.7,0.7)
-myscreen.title('Turtle Game')
+myscreen.setup(0.8,0.8)
+myscreen.title('Schmoobles')
 
 
 turtleList = []
