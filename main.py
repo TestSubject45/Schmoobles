@@ -2,7 +2,7 @@ import random
 import turtle
 from schmooble import Schmooble, foodList, mapRange
 
-popLimit = 2
+startPop = 5
 
 myscreen = turtle.Screen()
 
@@ -13,13 +13,23 @@ myscreen.title('Turtle Game')
 
 turtleList = []
 schmoobleList = []
-for i in range(0,popLimit):
+for i in range(0,startPop):
 	schmoobleList.append(Schmooble())
+
 
 running = True
 while running:
-	for i in range(0,popLimit):
+	deadPop = 0
+	for i in range(0,startPop):
+		print("\n\nSchmooble #",i)
 		schmoobleList[i].update()
+		if schmoobleList[i].state == 4:
+			deadPop = deadPop + 1
+	print("len of schmoobleList",len(schmoobleList))
+	if deadPop == len(schmoobleList):
+		running = False
+	print("Total dead population:",deadPop)		
 
+input("All population has died...")
 
 turtle.done()

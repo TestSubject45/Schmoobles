@@ -14,6 +14,7 @@ class FoodList:
 		self.turtle = turtle.Turtle()
 		self.turtle.speed(0)
 		self.turtle.pencolor('red')
+		self.drawPoints()
 
 	def makeFoodList(self):
 		for i in range(0,self.pointLimit):
@@ -23,8 +24,8 @@ class FoodList:
 		self.list.append((random.randint(-self.distanceLimit,self.distanceLimit),random.randint(-self.distanceLimit,self.distanceLimit)))
 
 	def removePoint(self,point):
-		print(self.list)
-		print(point)
+		# print(self.list)
+		# print(point)
 		self.list.remove(point)
 		self.addPoint()
 		self.drawPoints()
@@ -38,7 +39,6 @@ class FoodList:
 			self.turtle.goto(-2000,-2000)
 
 foodList = FoodList(foodDistanceLimit,foodLimit)
-foodList.drawPoints()
 
 
 class Schmooble:
@@ -46,19 +46,31 @@ class Schmooble:
 		if parent1 == None or parent2 == None:
 			self.speed = random.randint(1,10)
 			self.energy = random.randint(5,200)
-			self.matingEnergyThreshold = round(random.uniform(0,1),2)
+			self.matingEnergyThreshold = random.randint(50,200)
 			self.energyTransferToChild = round(random.uniform(0,1),2)
 			self.sightRange = random.randint(10,200)
-			self.boredomLimit = random.randint(1,20)
+			self.boredomLimit = random.randint(1,21)
 			self.mutationRate = round(random.uniform(0,1),2)
 		else:
 			self.mate(parent1,parent2)
 
 		self.turtle = turtle.Turtle()
 		self.turtle.speed = self.speed
-		self.state = 0 #States: 0 = search, 1 = move, 2 = wander, 3 = mate
+		self.state = 0 #States: 0 = search, 1 = move, 2 = wander, 3 = mate, 4 = dead
 		self.destination = self.turtle.pos()
 		self.timeSpentWandering = 0
+		print("Mating Threshold",self.matingEnergyThreshold)
+
+	def spendEnergy(self,energy):
+		self.energy = self.energy - energy
+		if self.energy <= 0:
+			self.starve()
+		print("Energy Remaining:",self.energy)
+
+	def starve(self):
+		print("No energy!")
+		print("This Schmooble has died.")
+		self.state = 4
 
 	def setSpeed(self,speed):
 		if speed > 10:
@@ -69,17 +81,21 @@ class Schmooble:
 			self.turtle.speed = speed
 
 	def update(self):
+		print("State:",self.state)
 		global foodList
-		if self.state == 0:
+		if self.state == 0: #Search for Food
 			self.destination = self.searchForFood(foodList.list)
-		elif self.state == 1:
+		elif self.state == 1: #Move towards food
 			self.move(self.destination)
-		elif self.state == 2:
+		elif self.state == 2: #Wander
 			self.wander()
-		elif self.state == 3:
+		elif self.state == 3: #Search for mate
 			self.searchForMate()
+		elif self.state == 4: #RIP
+			pass
 
 	def searchForFood(self,foodList):
+		print("Searching for food...")
 		closestPoint = (-500000,-500000)
 		for foodSpot in foodList:
 			if self.turtle.distance(foodSpot) <= self.sightRange:
@@ -93,32 +109,50 @@ class Schmooble:
 			return self.turtle.pos()
 		return closestPoint
 
+	def foodAtPoint(self,point):
+		global foodList
+		if point in foodList.list:
+			return True
+		else:
+			return False
+
 	def move(self,point):
 		# print("Moving to",point)
 		# print("Current Point",self.turtle.pos())
+		self.spendEnergy(1)
 		self.turtle.setheading(self.turtle.towards(point))
 		self.turtle.forward(self.speed)
-		if self.turtle.distance(point) < 5:
-			print("Yum!")
-			self.eat(50)
-			foodList.removePoint(point)
+		if self.foodAtPoint(point) == False:
+			print("Food at point has dissapeared!")
 			self.state = 0
+		if self.turtle.distance(point) < 5:
+			if self.foodAtPoint(point):
+				print("Yum!")
+				self.eat(50)
+				foodList.removePoint(point)
+				self.state = 0
+			else:
+				print("No food here now!")
+				self.state = 0
 
 	def eat(self,energy):
 		self.energy = self.energy + energy
+		print("Current Energy:",self.energy)
 		if self.energy >= self.matingEnergyThreshold:
 			self.state = 3
 
 	def searchForMate(self):
+		print("#######################Energy threshold crossed, searching for mate!")
 		pass
 
 	def wander(self):
 	#	print("Wandering!")
 	#	print("Been wandering for:",self.timeSpentWandering)
+		self.spendEnergy(1)
 		if self.timeSpentWandering == 0:
 			randomDirection = random.randint(0,360)
 			self.turtle.setheading(randomDirection)
-		if self.timeSpentWandering % round(self.boredomLimit/10) == 0:
+		if self.timeSpentWandering % round(self.boredomLimit)/11 == 0:
 			randomDirection = random.randint(0,360)
 			self.turtle.setheading(randomDirection)
 		if self.timeSpentWandering < self.boredomLimit:
