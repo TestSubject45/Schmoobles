@@ -1,5 +1,6 @@
 import random
 import turtle
+from helpers import findMidpoint, mapRange
 
 # class MatingRegister:
 # 	def __init__(self):
@@ -29,20 +30,7 @@ import turtle
 
 # matingRegister = MatingRegister()
 
-def findMidpoint(p1,p2):
-	p1x = p1[0]
-	p1y = p1[1]
 
-	p2x = p2[0]
-	p2y = p2[1]
-
-	midpointX = (p1x + p2x) / 2
-	midpointY = (p1y + p2y) / 2
-
-	return (midpointX,midpointY)
-
-def mapRange(value, inMin, inMax, outMin, outMax):
-    return outMin + (((value - inMin) / (inMax - inMin)) * (outMax - outMin))
 
 class Schmooble:
 	def __init__(self,idnum,birthPoint=(0,0)):
@@ -68,6 +56,18 @@ class Schmooble:
 		self.turtle.pendown()
 
 		self.destination = self.turtle.pos()
+
+	def tick(self):
+		print("Energy left for Schmooble #",str(self.id)+":",self.energy)
+		self.energy = self.energy - 1
+		if self.energy <= 0:
+			self.die()
+		if self.state == 0:
+			pass
+
+	def die(self):
+		self.turtle.dot(8)
+		self.state = -1
 
 	def creatureInfoClickHelper(self,x,y):
 		print("Location:",x,y)
