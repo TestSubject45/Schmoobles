@@ -48,12 +48,14 @@ class Schmooble:
 		self.id = idnum
 
 		self.turtle = turtle.Turtle()
-		self.turtle.speed = mapRange(self.speed,1,100,0,10)
+		self.turtle.speed = 10
 
 		self.turtle.onclick(self.creatureInfoClickHelper)
 		self.turtle.penup()
 		self.turtle.goto(birthPoint)
+		self.turtle.setheading(random.randint(0,360))
 		self.turtle.pendown()
+		self.turtle.speed = mapRange(self.speed,1,100,0,10)
 
 		self.destination = self.turtle.pos()
 
@@ -66,7 +68,8 @@ class Schmooble:
 			pass
 
 	def die(self):
-		self.turtle.dot(8)
+		self.turtle.dot(10,'red')
+		self.turtle.ht()
 		self.state = -1
 
 	def creatureInfoClickHelper(self,x,y):
