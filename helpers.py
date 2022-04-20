@@ -17,3 +17,17 @@ def mapRange(value, inMin, inMax, outMin, outMax):
 
 def randomPosition(maxRange):
 	return (random.randint(-maxRange,maxRange),random.randint(-maxRange,maxRange))
+
+def getDeadPopulation(census):
+	deadPops = []
+	for popID in census.keys():
+		if census[popID].state == -1:
+			deadPops.append(popID)
+	return deadPops
+
+def getLivingPopulation(census):
+	livingPops = []
+	for popID in census.keys():
+		if census[popID].state != -1:
+			livingPops.append(popID)
+	return livingPops
