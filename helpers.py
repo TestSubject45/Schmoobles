@@ -1,3 +1,5 @@
+import random
+
 def findMidpoint(p1,p2):
 	p1x = p1[0]
 	p1y = p1[1]
@@ -12,3 +14,6 @@ def findMidpoint(p1,p2):
 
 def mapRange(value, inMin, inMax, outMin, outMax):
     return outMin + (((value - inMin) / (inMax - inMin)) * (outMax - outMin))
+
+def randomPosition(maxRange):
+	return (random.randint(-maxRange,maxRange),random.randint(-maxRange,maxRange))

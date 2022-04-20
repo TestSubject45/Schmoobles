@@ -1,5 +1,6 @@
 import random
 import turtle
+from helpers import randomPosition
 foodDistanceLimit = 400
 foodLimit = 15
 
@@ -21,7 +22,7 @@ class FoodList:
 			self.addPoint()
 
 	def addPoint(self):
-		self.list.append((random.randint(-self.distanceLimit,self.distanceLimit),random.randint(-self.distanceLimit,self.distanceLimit)))
+		self.list.append(randomPosition(self.distanceLimit))
 
 	def removePoint(self,point):
 		self.sinceReset = self.sinceReset + 1
