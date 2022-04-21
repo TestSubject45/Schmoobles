@@ -1,6 +1,6 @@
 import random
 import turtle
-from helpers import findMidpoint, mapRange
+from helpers import findMidpoint, mapRange, randomPosition, getDeadPopulation, getLivingPopulation
 from foodlist import foodList
 
 # class MatingRegister:
@@ -30,6 +30,25 @@ from foodlist import foodList
 # 		return self.schmoobles[turtleID]
 
 # matingRegister = MatingRegister()
+
+class Census:
+	def __init__(self,startingPopulation):
+		self.population = {}
+		self.livingPop = {}
+		self.deadPop = {}
+		while len(self.population) < startingPopulation:
+			self.population[len(self.population)+1] = Schmooble(len(self.population)+1,randomPosition(100))
+
+	def step(self):
+		self.deadPop = getDeadPopulation(self.population)
+		self.livingPop = getLivingPopulation(self.population)
+		if len(self.deadPop) == len(self.population):
+			print("Everyone's dead!")
+			return False
+		else:
+			for schmoobleID in self.livingPop:
+				self.population[schmoobleID].tick()
+			return True
 
 
 
@@ -87,17 +106,23 @@ class Schmooble:
 				elif self.destinationType == "mate":
 					pass
 		elif self.state == 3: #wander
+			print("This schmooble is wandering!")
 			for i in range(0,self.boredomLimit):
-				self.turtle.setheading(random.randint(1,365))
 				self.move()
+				self.energy = self.energy - 1
 			self.state = 1
 
 	def move(self):
-		self.turtle.setheading(self.turtle.towards(self.destination))
-		if self.turtle.distance(self.destination) > self.speed:
+		if self.state == 2:
+			self.turtle.setheading(self.turtle.towards(self.destination))
+			if self.turtle.distance(self.destination) > self.speed:
+				self.turtle.forward(self.speed)
+			else:
+				self.turtle.forward(self.turtle.distance(self.destination))
+		elif self.state == 3:
+			self.turtle.setheading(random.randint(1,365))
 			self.turtle.forward(self.speed)
-		else:
-			self.turtle.forward(self.turtle.distance(self.destination))
+
 
 	def eat(self):
 		self.energy = self.energy + 50
