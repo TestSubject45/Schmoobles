@@ -7,7 +7,7 @@ myscreen.setup(0.8,0.8)
 myscreen.title('Schmoobles')
 
 from foodlist import foodList
-from schmooble import Census
+from census import Census
 
 def mainLoop(initialPopulation):
 	census = Census(initialPopulation)
@@ -18,5 +18,5 @@ def mainLoop(initialPopulation):
 
 
 
-mainLoop(5)
+mainLoop(2)
 turtle.done()

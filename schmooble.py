@@ -3,96 +3,13 @@ import turtle
 from helpers import findMidpoint, mapRange, randomPosition
 from foodlist import foodList
 
-class Census:
-	def __init__(self,startingPopulation):
-		self.population = {}
-		self.livingPop = []
-		self.deadPop = []
-		self.possibleMates = []
-		while len(self.population) < startingPopulation:
-			self.population[len(self.population)+1] = Schmooble(len(self.population)+1,randomPosition(100))
-
-	def step(self):
-		self.getDeadPopulation()
-		self.getLivingPopulation()
-		self.getEligableMates()
-
-		if len(self.possibleMates) >= 2:
-			for critter1 in self.possibleMates:
-				for critter2 in self.possibleMates:
-					if critter1 != critter2 and self.population[critter1].canSee(self.population[critter2].turtle.pos()) and self.population[critter2].canSee(self.population[critter1].turtle.pos()):
-						if self.population[critter1].turtle.distance(self.population[critter2].turtle.pos()) < 5:
-							self.mate(critter1,critter2)
-						self.population[critter1].state = 2
-						self.population[critter1].destinationType = "mate"
-						self.population[critter2].state = 2
-						self.population[critter2].destinationType = "mate"
-						midpoint = findMidpoint(self.population[critter1].turtle.pos(),self.population[critter2].turtle.pos())
-						self.population[critter1].destination = midpoint
-						self.population[critter2].destination = midpoint
-						print("Found two mates:")
-						self.population[critter1].creatureInfo()
-						self.population[critter2].creatureInfo()
-
-		if len(self.deadPop) == len(self.population):
-			print("Everyone's dead!")
-			return False
-		else:
-			for schmoobleID in self.livingPop:
-				self.population[schmoobleID].tick()
-			return True
-
-	def getDeadPopulation(self):
-		self.deadPop = []
-		for popID in self.population.keys():
-			if self.population[popID].state == -1:
-				self.deadPop.append(popID)
-
-	def getLivingPopulation(self):
-		self.livingPop = []
-		for popID in self.population.keys():
-			if self.population[popID].state != -1:
-				self.livingPop.append(popID)
-
-	def getEligableMates(self):
-		self.possibleMates = []
-		for popID in self.population.keys():
-			if self.population[popID].mateable == True:
-				self.possibleMates.append(popID)
-
-	def mate(parent1ID,parent2ID):
-		parent1 = self.population[parent1ID]
-		parent2 = self.population[parent2ID]
-
-		outputSchmooble = Schmooble(len(self.population)+1,parent1.turtle.pos())
-
-		mutationRate = abs(((parent1.mutationRate + parent2.mutationRate) / 2) + random.uniform(-1,1))
-
-		outputSchmooble.speed = (parent1.speed + (parent2.speed)/2) * mutationRate
-		outputSchmooble.setSpeed(parent1.speed)
-		outputSchmooble.energy = round((parent1.energy * parent1.energyTransferToChild) + (parent2.energy * parent2.energyTransferToChild) * mutationRate)
-		parent1.energy = round(parent1.energy - (parent1.energy * parent1.energyTransferToChild))
-		parent2.energy = round(parent2.energy - (parent2.energy * parent2.energyTransferToChild))
-		outputSchmooble.matingEnergyThreshold = round(((parent1.matingEnergyThreshold + parent2.matingEnergyThreshold) / 2) * mutationRate,2)
-		outputSchmooble.energyTransferToChild = round(((parent1.energyTransferToChild + parent2.energyTransferToChild) / 2) * mutationRate,2)
-		outputSchmooble.sightRange = ((parent1.sightRange + parent2.sightRange)/2)*mutationRate
-		outputSchmooble.boredomLimit = ((parent1.boredomLimit + parent2.boredomLimit)/2)*mutationRate
-		outputSchmooble.mutationRate = round(mutationRate,2)
-
-		parent1.state = 1
-		parent2.state = 1
-
-		return outputSchmooble
-
-
-
 class Schmooble:
 	def __init__(self,idnum,birthPoint=(0,0)):
 		#Genes
 		self.speed = random.randint(1,100)
 		self.energy = random.randint(5,200)
 		self.matingEnergyThreshold = random.randint(50,200)
-		self.energyTransferToChild = round(random.uniform(0,1),2)
+		self.energyTransferToChild = round(random.uniform(0.25,1),2)
 		self.sightRange = random.randint(50,250)
 		self.boredom = 0
 		self.boredomLimit = random.randint(1,5)
@@ -108,8 +25,10 @@ class Schmooble:
 
 		self.turtle.onclick(self.creatureInfoClickHelper)
 		self.turtle.penup()
+		self.turtle.ht()
 		self.turtle.goto(birthPoint)
 		self.turtle.setheading(random.randint(0,360))
+		self.turtle.st()
 		self.turtle.pendown()
 		self.turtle.speed = mapRange(self.speed,1,100,0,10)
 
@@ -117,17 +36,20 @@ class Schmooble:
 		self.destinationType = None #Possible values: None, food, mate
 
 	def tick(self):
-		print("Energy left for Schmooble #"+str(self.id)+":",self.energy)
+		print("Energy left for Schmooble #"+str(self.id)+":",self.energy,end=" ")
 		self.energy = self.energy - 1
 
 		if self.energy <= 0:
 			self.die()
 
-
-		if self.energy > self.matingEnergyThreshold:
+		if self.energy >= self.matingEnergyThreshold:
 			print("Ready to mate!")
 			self.mateable = True
-			self.turtle.color('pink')
+			self.turtle.color('dark blue')
+		else:
+			print()
+			self.mateable = False
+			self.turtle.color("black")
 
 
 		if self.state == 0: # wait
@@ -162,9 +84,6 @@ class Schmooble:
 			pass
 
 
-
-
-
 	def move(self):
 		if self.state == 2:
 			self.turtle.setheading(self.turtle.towards(self.destination))
@@ -178,7 +97,7 @@ class Schmooble:
 
 
 	def eat(self):
-		self.energy = self.energy + 50
+		self.energy = self.energy + 25
 
 	def die(self):
 		self.turtle.dot(10,'red')
@@ -193,7 +112,6 @@ class Schmooble:
 				print("Found food in range! at",foodSpot)
 				if self.turtle.distance(foodSpot) < self.turtle.distance(closestPoint):
 					closestPoint = foodSpot
-		print("Closest point of food:",closestPoint,"Distance:",self.turtle.distance(closestPoint))
 		if closestPoint == (-50000000,-50000000):
 			return self.turtle.pos()
 		return closestPoint
