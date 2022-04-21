@@ -1,5 +1,5 @@
 from schmooble import Schmooble
-from helpers import randomPosition, mapRange
+from helpers import randomPosition, mapRange, findMidpoint
 import random
 
 class Census:
@@ -73,7 +73,6 @@ class Census:
 		outputSchmooble.speed = (parent1.speed + (parent2.speed)/2) * mutationRate
 		outputSchmooble.turtle.speed = mapRange(outputSchmooble.speed,1,100,0,10)
 		outputSchmooble.energy = round((parent1.energy * parent1.energyTransferToChild) + (parent2.energy * parent2.energyTransferToChild) * mutationRate)
-		print("###############Offspring starting with",outputSchmooble.energy,"energy")
 		parent1.energy = round(parent1.energy - (parent1.energy * parent1.energyTransferToChild))
 		parent2.energy = round(parent2.energy - (parent2.energy * parent2.energyTransferToChild))
 		outputSchmooble.matingEnergyThreshold = round(((parent1.matingEnergyThreshold + parent2.matingEnergyThreshold) / 2) * mutationRate,2)
@@ -84,5 +83,8 @@ class Census:
 
 		parent1.state = 1
 		parent2.state = 1
+
+		print("Offspring creature info")
+		outputSchmooble.creatureInfo()
 
 		self.population[outputSchmooble.id] = outputSchmooble

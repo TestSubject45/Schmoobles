@@ -36,6 +36,10 @@ class Schmooble:
 		self.destinationType = None #Possible values: None, food, mate
 
 	def tick(self):
+		tmpposition = self.turtle.pos()
+		if tmpposition[0] > 600 or tmpposition[1] > 600:
+			print("----------------------------------------------------------------------Schmooble has left the bounds and gotten lost...")
+			self.die()
 		print("Energy left for Schmooble #"+str(self.id)+":",self.energy,end=" ")
 		self.energy = self.energy - 1
 
@@ -45,7 +49,7 @@ class Schmooble:
 		if self.energy >= self.matingEnergyThreshold:
 			print("Ready to mate!")
 			self.mateable = True
-			self.turtle.color('dark blue')
+			self.turtle.color('red')
 		else:
 			print()
 			self.mateable = False
@@ -67,9 +71,13 @@ class Schmooble:
 				print("Reached destination")
 				self.state = 0
 				if self.destinationType == 'food':
-					self.eat()
-					foodList.removePoint(self.destination)
-					self.state = 1
+					if self.destination in foodList.list:
+						self.eat()
+						foodList.removePoint(self.destination)
+						self.state = 1
+					else:
+						print("Food disappeared before I got there!")
+						self.state = 1
 				elif self.destinationType == "mate":
 					self.state = 4
 		elif self.state == 3: #wander
@@ -109,7 +117,6 @@ class Schmooble:
 		closestPoint = (-50000000,-50000000)
 		for foodSpot in foodList:
 			if self.turtle.distance(foodSpot) <= self.sightRange:
-				print("Found food in range! at",foodSpot)
 				if self.turtle.distance(foodSpot) < self.turtle.distance(closestPoint):
 					closestPoint = foodSpot
 		if closestPoint == (-50000000,-50000000):
