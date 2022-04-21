@@ -100,7 +100,7 @@ class Schmooble:
 			else:
 				self.turtle.forward(self.turtle.distance(self.destination))
 		elif self.state == 3:
-			self.turtle.setheading(random.randint(1,365))
+			self.turtle.setheading(self.turtle.heading() + random.randint(-180,180))
 			self.turtle.forward(self.speed)
 
 
