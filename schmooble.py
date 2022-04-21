@@ -90,7 +90,7 @@ class Schmooble:
 			for i in range(0,self.boredomLimit):
 				self.turtle.setheading(random.randint(1,365))
 				self.move()
-			self.state(1)
+			self.state = 1
 
 	def move(self):
 		self.turtle.setheading(self.turtle.towards(self.destination))
