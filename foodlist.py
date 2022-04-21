@@ -18,7 +18,7 @@ class FoodList:
 		self.drawPoints()
 
 	def makeFoodList(self):
-		for i in range(0,self.pointLimit-1):
+		for i in range(0,self.pointLimit):
 			self.addPoint()
 
 	def addPoint(self):
