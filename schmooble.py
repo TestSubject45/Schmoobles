@@ -37,7 +37,7 @@ class Schmooble:
 
 	def tick(self):
 		tmpposition = self.turtle.pos()
-		if tmpposition[0] > 600 or tmpposition[1] > 600:
+		if tmpposition[0] > 500 or tmpposition[1] > 500:
 			print("----------------------------------------------------------------------Schmooble has left the bounds and gotten lost...")
 			self.die()
 		print("Energy left for Schmooble #"+str(self.id)+":",self.energy,end=" ")
