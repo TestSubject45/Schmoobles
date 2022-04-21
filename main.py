@@ -1,8 +1,6 @@
 import random
 import turtle
 
-from helpers import findMidpoint, mapRange, randomPosition, getDeadPopulation, getLivingPopulation
-
 myscreen = turtle.Screen()
 myscreen.bgcolor('light green')
 myscreen.setup(0.8,0.8)
@@ -20,5 +18,5 @@ def mainLoop(initialPopulation):
 
 
 
-mainLoop(1)
+mainLoop(5)
 turtle.done()
