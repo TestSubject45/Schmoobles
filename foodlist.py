@@ -14,7 +14,6 @@ class FoodList:
 		self.turtle = turtle.Turtle()
 		self.turtle.speed(0)
 		self.turtle.ht()
-		self.turtle.
 		self.sinceReset = 0
 		self.drawPoints()
 
