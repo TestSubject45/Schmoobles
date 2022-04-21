@@ -34,14 +34,15 @@ from foodlist import foodList
 class Census:
 	def __init__(self,startingPopulation):
 		self.population = {}
-		self.livingPop = {}
-		self.deadPop = {}
+		self.livingPop = []
+		self.deadPop = []
 		while len(self.population) < startingPopulation:
 			self.population[len(self.population)+1] = Schmooble(len(self.population)+1,randomPosition(100))
 
 	def step(self):
 		self.deadPop = getDeadPopulation(self.population)
 		self.livingPop = getLivingPopulation(self.population)
+
 		if len(self.deadPop) == len(self.population):
 			print("Everyone's dead!")
 			return False
@@ -49,6 +50,25 @@ class Census:
 			for schmoobleID in self.livingPop:
 				self.population[schmoobleID].tick()
 			return True
+
+	def getDeadPopulation(self):
+		self.deadPop = []
+		for popID in self.population.keys():
+			if self.population[popID].state == -1:
+				self.deadPops.append(popID)
+
+	def getLivingPopulation(self):
+		self.livingPop = []
+		for popID in self.population.keys():
+			if self.population[popID].state != -1:
+				livingPops.append(popID)
+
+	def getEligableMates(self):
+		allMates = []
+		for popID in self.population.keys():
+			if self.population[popID].mateable == True:
+				allMates.append(popID)
+		return allMates		
 
 
 
@@ -62,6 +82,7 @@ class Schmooble:
 		self.sightRange = random.randint(10,200)
 		self.boredomLimit = random.randint(1,5)
 		self.mutationRate = round(random.uniform(0,1),2)
+		self.mateable = False
 
 		#Meta info
 		self.state = 1 #States: 0 = wait; 1 = search for food;
@@ -83,8 +104,15 @@ class Schmooble:
 	def tick(self):
 		print("Energy left for Schmooble #"+str(self.id)+":",self.energy)
 		self.energy = self.energy - 1
+
 		if self.energy <= 0:
 			self.die()
+
+
+		if self.energy > self.matingEnergyThreshold:
+			self.mateable = True
+
+
 		if self.state == 0: # wait
 			pass
 		elif self.state == 1: # look for food
@@ -111,6 +139,7 @@ class Schmooble:
 				self.move()
 				self.energy = self.energy - 1
 			self.state = 1
+
 
 	def move(self):
 		if self.state == 2:
