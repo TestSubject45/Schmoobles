@@ -34,6 +34,8 @@ class Schmooble:
 		self.turtle.st()
 	#	self.turtle.pendown()
 		self.turtle.speed = mapRange(self.speed,1,100,0,10)
+		self.turtle.shape("turtle")
+		self.turtle.color("green")
 
 		self.destination = self.turtle.pos()
 		self.destinationType = None #Possible values: None, food, mate
@@ -45,7 +47,7 @@ class Schmooble:
 		if self.energy <= 0:
 			self.die()
 
-		if abs(self.turtle.pos()[0]) > 550 or abs(self.turtle.pos()[1]) > 425:
+		if abs(self.turtle.pos()[0]) > 475 or abs(self.turtle.pos()[1]) > 475:
 			logging.error("Went out of bounds! Location:")
 			logging.error(self.turtle.pos())
 			self.die()
@@ -58,9 +60,9 @@ class Schmooble:
 
 
 		if self.mateable:
-			self.turtle.color("red")
+			self.turtle.color("violet red")
 		else:
-			self.turtle.color("black")
+			self.turtle.color("green")
 
 		if self.state == 0: # wait, mostly unused
 			pass

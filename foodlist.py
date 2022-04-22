@@ -13,9 +13,28 @@ class FoodList:
 		self.makeFoodList()
 
 		self.turtle = turtle.Turtle()
+		self.backgroundTurtle = turtle.Turtle()
 		self.turtle.speed(0)
 		self.turtle.ht()
 		self.sinceReset = 0
+
+		self.backgroundTurtle.ht()
+		self.backgroundTurtle.speed(10)
+		self.backgroundTurtle.penup()
+		self.backgroundTurtle.goto(maxFoodDistanceLimit+75,maxFoodDistanceLimit+75)
+		self.backgroundTurtle.pendown()
+		self.backgroundTurtle.fillcolor("light goldenrod")
+		self.backgroundTurtle.begin_fill()
+		self.backgroundTurtle.setheading(270)
+		self.backgroundTurtle.forward((maxFoodDistanceLimit * 2) + 150)
+		self.backgroundTurtle.setheading(180)
+		self.backgroundTurtle.forward((maxFoodDistanceLimit * 2) + 150)
+		self.backgroundTurtle.setheading(90)
+		self.backgroundTurtle.forward((maxFoodDistanceLimit * 2) + 150)
+		self.backgroundTurtle.setheading(0)
+		self.backgroundTurtle.forward((maxFoodDistanceLimit * 2) + 150)
+		self.backgroundTurtle.end_fill()
+
 		self.drawPoints()
 
 	def makeFoodList(self):
@@ -31,7 +50,7 @@ class FoodList:
 		# print(point)
 		self.turtle.penup()
 		self.turtle.goto(point)
-		self.turtle.dot(10,'light green')
+		self.turtle.dot(8,'light green')
 		try:
 			self.list.remove(point)
 			self.addPoint()
