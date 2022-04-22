@@ -87,7 +87,7 @@ class Census:
 
 		outputSchmooble = Schmooble(len(self.population)+1,parent1.turtle.pos())
 
-		mutationRate = abs(((parent1.mutationRate + parent2.mutationRate) / 2) + random.uniform(-1,1))
+		mutationRate = abs(((parent1.mutationRate + parent2.mutationRate) / 2) + random.uniform(-0.1,0.1))
 
 		outputSchmooble.speed = round((parent1.speed + (parent2.speed)/2) * mutationRate)
 		outputSchmooble.turtle.speed = mapRange(outputSchmooble.speed,1,100,0,10)
