@@ -20,12 +20,15 @@ class Schmooble:
 		self.cooldownCounter = 0
 		self.age = 0
 
+
 		#Meta info
 		self.state = 1 #States: 0 = wait; 1 = search for food;
 		self.id = idnum
 
 		self.turtle = turtle.Turtle()
 		self.turtle.speed = 10
+		self.turtle.resizemode("user")
+		self.turtle.shapesize(0.5, 0.5)
 
 		self.turtle.onclick(self.creatureInfoClickHelper)
 		self.turtle.penup()
@@ -89,6 +92,11 @@ class Schmooble:
 				self.boredom = 0
 				self.state = 1
 			pass
+
+		self.age = self.age + 1
+		if self.age > 50 and self.age < 175:
+			self.turtle.shapesize(self.age/100, self.age/100)
+
 
 		self.energy = self.energy - 1
 		logging.debug("Energy left for Schmooble #"+str(self.id)+": "+str(self.energy))
@@ -159,6 +167,7 @@ class Schmooble:
 
 	def creatureInfo(self):
 		print("\nID Number:",self.id)
+		print("Age:",self.age)
 		print("Speed:",self.speed)
 		print("Energy:",self.energy)
 		print("Mating Threshold:",self.matingEnergyThreshold)
