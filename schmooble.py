@@ -45,7 +45,7 @@ class Schmooble:
 		if self.energy <= 0:
 			self.die()
 
-		if abs(self.turtle.pos()[0]) > 900 or abs(self.turtle.pos()[1]) > 400:
+		if abs(self.turtle.pos()[0]) > 550 or abs(self.turtle.pos()[1]) > 425:
 			logging.error("Went out of bounds! Location:")
 			logging.error(self.turtle.pos())
 			self.die()
