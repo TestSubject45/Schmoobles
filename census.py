@@ -110,7 +110,7 @@ class Census:
 		parent1.cooldownCounter = parent1.matingCooldown
 		parent2.cooldownCounter = parent2.matingCooldown
 
-		print("Offspring creature info")
+		print("\nOffspring creature info")
 		outputSchmooble.creatureInfo()
 		# tmp = input("\n\nGeneration complete...")
 
