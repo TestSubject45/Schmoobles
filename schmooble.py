@@ -41,29 +41,6 @@ class Schmooble:
 		self.destinationType = None #Possible values: None, food, mate
 
 	def tick(self):
-		self.energy = self.energy - 1
-		logging.debug("Energy left for Schmooble #"+str(self.id)+": "+str(self.energy))
-
-		if self.energy <= 0:
-			self.die()
-
-		if abs(self.turtle.pos()[0]) > 475 or abs(self.turtle.pos()[1]) > 475:
-			logging.error("Went out of bounds! Location:")
-			logging.error(self.turtle.pos())
-			self.die()
-
-		if self.cooldownCounter > 0:
-			self.cooldownCounter = self.cooldownCounter - 1
-			self.mateable = False
-		elif self.cooldownCounter == 0 and self.energy >= self.matingEnergyThreshold:
-			self.mateable = True
-
-
-		if self.mateable:
-			self.turtle.color("violet red")
-		else:
-			self.turtle.color("green")
-
 		if self.state == 0: # wait, mostly unused
 			pass
 		elif self.state == 1: # look for food
@@ -111,6 +88,28 @@ class Schmooble:
 				self.boredom = 0
 				self.state = 1
 			pass
+
+		self.energy = self.energy - 1
+		logging.debug("Energy left for Schmooble #"+str(self.id)+": "+str(self.energy))
+
+		if self.energy <= 0:
+			self.die()
+
+		if abs(self.turtle.pos()[0]) > 475 or abs(self.turtle.pos()[1]) > 475:
+			logging.error("Went out of bounds! Location:")
+			logging.error(self.turtle.pos())
+			self.die()
+
+		if self.cooldownCounter > 0:
+			self.cooldownCounter = self.cooldownCounter - 1
+			self.mateable = False
+		elif self.cooldownCounter == 0 and self.energy >= self.matingEnergyThreshold:
+			self.mateable = True
+
+		if self.mateable:
+			self.turtle.color("violet red")
+		else:
+			self.turtle.color("green")
 
 
 	def move(self):
