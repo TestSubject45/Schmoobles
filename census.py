@@ -96,6 +96,8 @@ class Census:
 		parent2.energy = round(parent2.energy - (parent2.energy * parent2.energyTransferToChild))
 		outputSchmooble.matingEnergyThreshold = round(((parent1.matingEnergyThreshold + parent2.matingEnergyThreshold) / 2) * mutationRate)
 		outputSchmooble.energyTransferToChild = round(((parent1.energyTransferToChild + parent2.energyTransferToChild) / 2) * mutationRate,2)
+		if outputSchmooble.energyTransferToChild > 1:
+			outputSchmooble.energyTransferToChild = 1
 		outputSchmooble.sightRange = round(((parent1.sightRange + parent2.sightRange)/2)*mutationRate)
 		outputSchmooble.boredomLimit = round(((parent1.boredomLimit + parent2.boredomLimit)/2)*mutationRate)+1
 		outputSchmooble.mutationRate = round(mutationRate,2)
