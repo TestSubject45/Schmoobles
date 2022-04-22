@@ -19,11 +19,11 @@ def mainLoop(initialPopulation):
 	running = True
 	while running:
 		tickNumber = tickNumber + 1
-		logging.error("Tick "+str(tickNumber))
+		logging.error("Tick: "+str(tickNumber)+" Living population: "+str(len(census.livingPop))+" Total Offspring: "+str(len(census.population.keys())-initialPopulation))
 		running = census.step()
 
 
 
 
-mainLoop(3)
-turtle.done()
+mainLoop(8)
+turtle.done()		

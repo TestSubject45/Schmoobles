@@ -2,8 +2,8 @@ import random
 import turtle
 from helpers import randomPosition
 import logging
-foodDistanceLimit = 200
-foodLimit = 30
+foodDistanceLimit = 400
+foodLimit = 75
 
 class FoodList:
 	def __init__(self,maxFoodDistanceLimit,foodLimit):
