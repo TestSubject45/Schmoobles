@@ -32,7 +32,7 @@ class Schmooble:
 		self.turtle.goto(birthPoint)
 		self.turtle.setheading(random.randint(0,360))
 		self.turtle.st()
-		self.turtle.pendown()
+	#	self.turtle.pendown()
 		self.turtle.speed = mapRange(self.speed,1,100,0,10)
 
 		self.destination = self.turtle.pos()
