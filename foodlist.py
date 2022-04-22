@@ -1,8 +1,9 @@
 import random
 import turtle
 from helpers import randomPosition
-foodDistanceLimit = 400
-foodLimit = 10
+import logging
+foodDistanceLimit = 200
+foodLimit = 30
 
 class FoodList:
 	def __init__(self,maxFoodDistanceLimit,foodLimit):
@@ -35,7 +36,7 @@ class FoodList:
 			self.list.remove(point)
 			self.addPoint()
 		except ValueError:
-			print("Debug: Point was already removed")
+			logging.debug("Point was already removed")
 
 		if self.sinceReset > self.pointLimit:
 			self.drawPoints()

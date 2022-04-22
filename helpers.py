@@ -1,4 +1,5 @@
 import random
+import logging
 
 def findMidpoint(p1,p2):
 	p1x = p1[0]

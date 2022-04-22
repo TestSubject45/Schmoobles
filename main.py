@@ -1,5 +1,8 @@
 import random
 import turtle
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 myscreen = turtle.Screen()
 myscreen.bgcolor('light green')
@@ -10,13 +13,17 @@ from foodlist import foodList
 from census import Census
 
 def mainLoop(initialPopulation):
+	logging.error("Starting")
+	tickNumber = 0
 	census = Census(initialPopulation)
 	running = True
-	while running: 
+	while running:
+		tickNumber = tickNumber + 1
+		logging.error("Tick "+str(tickNumber))
 		running = census.step()
 
 
 
 
-mainLoop(2)
+mainLoop(3)
 turtle.done()

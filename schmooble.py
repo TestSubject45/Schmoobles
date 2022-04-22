@@ -2,12 +2,13 @@ import random
 import turtle
 from helpers import findMidpoint, mapRange, randomPosition
 from foodlist import foodList
+import logging
 
 class Schmooble:
 	def __init__(self,idnum,birthPoint=(0,0)):
 		#Genes
 		self.speed = random.randint(1,100)
-		self.energy = random.randint(5,200)
+		self.energy = random.randint(5,100)
 		self.matingEnergyThreshold = random.randint(50,200)
 		self.energyTransferToChild = round(random.uniform(0.25,1),2)
 		self.sightRange = random.randint(50,250)
@@ -15,6 +16,8 @@ class Schmooble:
 		self.boredomLimit = random.randint(1,5)
 		self.mutationRate = round(random.uniform(0,1),2)
 		self.mateable = False
+		self.matingCooldown = random.randint(20,100)
+		self.cooldownCounter = 0
 
 		#Meta info
 		self.state = 1 #States: 0 = wait; 1 = search for food;
@@ -36,27 +39,30 @@ class Schmooble:
 		self.destinationType = None #Possible values: None, food, mate
 
 	def tick(self):
-		tmpposition = self.turtle.pos()
-		if tmpposition[0] > 500 or tmpposition[1] > 500:
-			print("----------------------------------------------------------------------Schmooble has left the bounds and gotten lost...")
-			self.die()
-		print("Energy left for Schmooble #"+str(self.id)+":",self.energy,end=" ")
 		self.energy = self.energy - 1
+		logging.debug("Energy left for Schmooble #"+str(self.id)+": "+str(self.energy))
 
 		if self.energy <= 0:
 			self.die()
 
-		if self.energy >= self.matingEnergyThreshold:
-			print("Ready to mate!")
-			self.mateable = True
-			self.turtle.color('red')
-		else:
-			print()
+		if abs(self.turtle.pos()[0]) > 900 or abs(self.turtle.pos()[1]) > 400:
+			logging.error("Went out of bounds! Location:")
+			logging.error(self.turtle.pos())
+			self.die()
+
+		if self.cooldownCounter > 0:
+			self.cooldownCounter = self.cooldownCounter - 1
 			self.mateable = False
+		elif self.cooldownCounter == 0 and self.energy >= self.matingEnergyThreshold:
+			self.mateable = True
+
+
+		if self.mateable:
+			self.turtle.color("red")
+		else:
 			self.turtle.color("black")
 
-
-		if self.state == 0: # wait
+		if self.state == 0: # wait, mostly unused
 			pass
 		elif self.state == 1: # look for food
 			self.destination = self.searchForFood()
@@ -68,7 +74,7 @@ class Schmooble:
 		elif self.state == 2: #moving to destination
 			self.move()
 			if self.turtle.distance(self.destination) < 5:
-				print("Reached destination")
+				logging.debug("Reached destination")
 				self.state = 0
 				if self.destinationType == 'food':
 					if self.destination in foodList.list:
@@ -76,12 +82,19 @@ class Schmooble:
 						foodList.removePoint(self.destination)
 						self.state = 1
 					else:
-						print("Food disappeared before I got there!")
+						logging.debug("Food disappeared before I got there!")
 						self.state = 1
 				elif self.destinationType == "mate":
+					logging.debug("Reached mate!")
 					self.state = 4
+
+			if self.boredom < self.boredomLimit:
+				self.boredom = self.boredom + 1
+			elif self.boredom >= self.boredomLimit:
+				self.boredom = 0
+				self.state = 1
 		elif self.state == 3: #wander
-			print("This schmooble is wandering!")
+			logging.debug("This schmooble is wandering!")
 			if self.boredom < self.boredomLimit:
 				self.move()
 				self.boredom = self.boredom + 1
@@ -89,10 +102,17 @@ class Schmooble:
 				self.boredom = 0
 				self.state = 1
 		elif self.state == 4: #mate
+			if self.boredom < self.boredomLimit:
+				self.move()
+				self.boredom = self.boredom + 1
+			elif self.boredom >= self.boredomLimit:
+				self.boredom = 0
+				self.state = 1
 			pass
 
 
 	def move(self):
+		logging.debug("Moving...")
 		if self.state == 2:
 			self.turtle.setheading(self.turtle.towards(self.destination))
 			if self.turtle.distance(self.destination) > self.speed:
@@ -108,12 +128,14 @@ class Schmooble:
 		self.energy = self.energy + 25
 
 	def die(self):
+		logging.warning("Schmooble #"+str(self.id)+" has died.")
 		self.turtle.dot(10,'red')
 		self.turtle.ht()
 		self.state = -1
+		self.creatureInfo()
 
 	def searchForFood(self,foodList=foodList.list):
-		print("Searching for food...")
+		logging.debug("Searching for food...")
 		closestPoint = (-50000000,-50000000)
 		for foodSpot in foodList:
 			if self.turtle.distance(foodSpot) <= self.sightRange:
@@ -138,7 +160,7 @@ class Schmooble:
 		print("Speed:",self.speed)
 		print("Energy:",self.energy)
 		print("Mating Threshold:",self.matingEnergyThreshold)
-		print("Energy Transfer to Offspring:",self.energyTransferToChild)
+		print("Energy Transfer to Offspring:",self.energyTransferToChild,"|",round(self.energyTransferToChild * self.energy))
 		print("Sight Range:",self.sightRange)
 		print("Location",self.turtle.pos())
 		print("Destination:",self.destination)
@@ -146,7 +168,9 @@ class Schmooble:
 		print("Mutation Rate:",self.mutationRate)
 		print("Current State:",self.state)
 		print("Mating State:",self.mateable)
+		print("Mating cooldown:",self.matingCooldown)
+		print("Current cooldown:",self.cooldownCounter)
 		
-		print("\n\n")
-
+		# print("\n\n")
+		pass
 
