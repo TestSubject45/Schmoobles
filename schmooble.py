@@ -18,6 +18,7 @@ class Schmooble:
 		self.mateable = False
 		self.matingCooldown = random.randint(20,100)
 		self.cooldownCounter = 0
+		self.age = 0
 
 		#Meta info
 		self.state = 1 #States: 0 = wait; 1 = search for food;
